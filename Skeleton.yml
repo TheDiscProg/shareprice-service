@@ -1,0 +1,43 @@
+version: '3.0'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbit
+    environment:
+      - RABBITMQ_DEFAULT_USER=rmq
+      - RABBITMQ_DEFAULT_PASS=rabbit
+    networks:
+      - internal
+    ports:
+      - '4369:4369'
+      - '5672:5672'
+      - '25672:25672'
+      - '15672:15672'
+    labels:
+      NAME: 'rabbitmq'
+  hazelcast:
+    image: hazelcast/hazelcast:latest
+    hostname: hazelcast
+    networks:
+      - internal
+    ports:
+      - '5701:5701'
+      - '5702:5702'
+    environment:
+      - HZ_CLUSTERNAME=shareprice
+    labels:
+      NAME: 'hazelcast'
+  hazelcast-management-center:
+    image: hazelcast/management-center:latest
+    hostname: hcastmanagement
+    networks:
+      - internal
+    ports:
+      - '8080:8080'
+    environment:
+      - MC_DEFAULT_CLUSTER=shareprice
+      - MC_DEFAULT_CLUSTER_MEMBERS=hazelcast
+
+networks:
+  internal:
