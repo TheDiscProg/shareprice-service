@@ -3,8 +3,7 @@ version: '3.5'
 services:
   rabbitmq:
     image: rabbitmq:3-management
-    hostname: rabbitmq
-    container_name: rabbitmq
+    hostname: rabbit
     environment:
       - RABBITMQ_DEFAULT_USER=rmq
       - RABBITMQ_DEFAULT_PASS=rabbit
@@ -20,7 +19,6 @@ services:
   hazelcast:
     image: hazelcast/hazelcast:latest
     hostname: hazelcast
-    container_name: hazelcast
     networks:
       - internal
     ports:
@@ -33,7 +31,6 @@ services:
   hazelcast-management-center:
     image: hazelcast/management-center:latest
     hostname: hcastmanagement
-    container_name: hcastmanagement
     networks:
       - internal
     ports:
@@ -41,8 +38,6 @@ services:
     environment:
       - MC_DEFAULT_CLUSTER=shareprice
       - MC_DEFAULT_CLUSTER_MEMBERS=hazelcast
-    labels:
-      NAME: 'hcastmanagement'
   kafka01:
     image: confluentinc/cp-kafka:7.5.1
     hostname: kafka01
@@ -139,7 +134,7 @@ services:
     labels:
       NAME: "mysql"
     networks:
-      - internal
+      internal:
     ports:
       - "3306:3306"
     volumes:
@@ -149,6 +144,16 @@ services:
       MYSQL_DATABASE: shareprice
       MYSQL_USER: mysql
       MYSQL_PASSWORD: mysqlpassword
+  drop-off:
+    image: ramindur/drop-off-service:2.2.1
+    hostname: dropoff01
+    container_name: dropoff01
+    labels:
+      NAME: 'dropoff01'
+    networks:
+      - internal
+    ports:
+      - "8090:8090"
 networks:
   internal:
 volumes:
